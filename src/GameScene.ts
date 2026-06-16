@@ -23,6 +23,7 @@ export class GameScene extends Phaser.Scene {
   update() {
       const speed = 4;
     
+      //Add normaised player movement. 
       let dx = 0;
       let dy = 0;
     
@@ -39,6 +40,12 @@ export class GameScene extends Phaser.Scene {
     
         this.player.x += dx * speed;
         this.player.y += dy * speed;
+
+        //Clamp player to screen bounds
+        this.player.x = Phaser.Math.Clamp(this.player.x, 20, 780);
+        this.player.y = Phaser.Math.Clamp(this.player.y, 20, 580);
+
+
       }
     }
 }
