@@ -21,11 +21,24 @@ export class GameScene extends Phaser.Scene {
   }
 
   update() {
-    const speed = 4;
-
-    if (this.cursors.left.isDown) this.player.x -= speed;
-    if (this.cursors.right.isDown) this.player.x += speed;
-    if (this.cursors.up.isDown) this.player.y -= speed;
-    if (this.cursors.down.isDown) this.player.y += speed;
-  }
+      const speed = 4;
+    
+      let dx = 0;
+      let dy = 0;
+    
+      if (this.cursors.left.isDown) dx -= 1;
+      if (this.cursors.right.isDown) dx += 1;
+      if (this.cursors.up.isDown) dy -= 1;
+      if (this.cursors.down.isDown) dy += 1;
+    
+      const length = Math.hypot(dx, dy);
+    
+      if (length > 0) {
+        dx /= length;
+        dy /= length;
+    
+        this.player.x += dx * speed;
+        this.player.y += dy * speed;
+      }
+    }
 }
