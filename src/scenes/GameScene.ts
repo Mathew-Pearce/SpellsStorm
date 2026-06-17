@@ -12,6 +12,7 @@ import { updatePlayerAim } from '../systems/playerAimingSystem'
 import { updateProjectiles } from '../systems/projectileSystem'
 import { updateEnemyAi } from "../systems/enemyAISystem";
 import { updateSpellCasting } from '../systems/spellCastingSystem'
+import { updateProjectileEnemyCollision } from '../systems/collisionSystem'
 
 //Managers
 import { InputManager } from '../input/InputManager'
@@ -59,10 +60,8 @@ export class GameScene extends Phaser.Scene {
 
   update() {
    
-    // Player movement
     updatePlayerMovement(this.player, this.inputManager.getMoveVector());
 
-    //player aiming
     updatePlayerAim(this.player, this.inputManager.getAimPointer());
     
     updateSpellCasting(
@@ -72,7 +71,8 @@ export class GameScene extends Phaser.Scene {
       this.inputManager
     );
 
-    updateProjectiles(this.projectiles)
+    updateProjectiles(this.projectiles);
+    updateProjectileEnemyCollision(this.projectiles, this.enemy);
     updateEnemyAi(this.enemy, this.player);
   }
 }
