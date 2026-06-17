@@ -4,7 +4,7 @@ import Phaser from "phaser";
 import { createPlayer, type Player } from "../entities/Player";
 import { createEnemy, type Enemy } from "../entities/Enemy";
 import { createProjectile } from "../entities/Projectile";
-import { createHud } from '../entities/Hud'
+import { createHud, type Hud } from "../entities/Hud";
 
 //Systems
 import { updatePlayerMovement } from "../systems/playerMovementSystem";
@@ -15,6 +15,7 @@ import { updateSpellCasting } from '../systems/spellCastingSystem'
 import { updateProjectileEnemyCollision } from '../systems/collisionSystem'
 import { updateEnemySpawning } from '../systems/enemySpawnSystem'
 import { updatePlayerEnemyDamage } from '../systems/playerDamageSystem'
+import { updateHud } from "../systems/hudSystem";
 
 //Managers
 import { InputManager } from '../input/InputManager'
@@ -25,6 +26,7 @@ export class GameScene extends Phaser.Scene {
   private inputManager!: InputManager;
   private projectiles!: Phaser.GameObjects.Group;
   private enemies!: Enemy[] = [];
+  private hud!: Hud;
 
   constructor() {
     super("GameScene");
@@ -41,7 +43,7 @@ export class GameScene extends Phaser.Scene {
     // Input
     this.inputManager = new InputManager(this);
 
-    createHud(this);
+    this.hud = createHud(this);
 
     this.projectiles = this.add.group();
   }
@@ -64,6 +66,7 @@ export class GameScene extends Phaser.Scene {
     updateEnemySpawning(this, this.enemies);
     updateEnemyAi(this.enemies, this.player);
     updatePlayerEnemyDamage(this, this.player, this.enemies)
+    updateHud(this.hud, this.player, this.enemies);
 
   }
 }
