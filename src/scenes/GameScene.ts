@@ -5,8 +5,9 @@ import { createPlayer } from "../entities/Player";
 import { createEnemy } from "../entities/Enemy";
 import { createProjectile } from "../entities/Projectile";
 //Systems
-import { updatePlayerMovement } from "../systems/playerMovement";
+import { updatePlayerMovement } from "../systems/playerMovementSystem";
 import { updatePlayerAim } from '../systems/playerAimingSystem'
+import { updateProjectiles } from '../systems/projectileSystem'
 
 export class GameScene extends Phaser.Scene {
 
@@ -63,13 +64,7 @@ export class GameScene extends Phaser.Scene {
       this.input.activePointer
     );
    
-    this.projectiles.getChildren().forEach((child) => {
-      const projectile = child as Phaser.GameObjects.Arc;
-      const velocity = projectile.getData("velocity") as Phaser.Math.Vector2;
-  
-      projectile.x += velocity.x;
-      projectile.y += velocity.y;
-    });
+    updateProjectiles(this.projectiles)
 
     // Enemy AI
     const enemySpeed = 1.5;
