@@ -34,4 +34,8 @@ export class InputManager {
   getAimPointer() {
     return this.scene.input.activePointer;
   }
+
+  isCasting() {
+    return this.scene.input.activePointer.isDown;
+  }
 }
