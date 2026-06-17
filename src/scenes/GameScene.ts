@@ -8,6 +8,7 @@ import { createProjectile } from "../entities/Projectile";
 import { updatePlayerMovement } from "../systems/playerMovementSystem";
 import { updatePlayerAim } from '../systems/playerAimingSystem'
 import { updateProjectiles } from '../systems/projectileSystem'
+import { updateEnemyAi } from "../systems/enemyAISystem";
 
 export class GameScene extends Phaser.Scene {
 
@@ -58,29 +59,11 @@ export class GameScene extends Phaser.Scene {
    
     // Player movement
     updatePlayerMovement(this.player, this.cursors);
-
     updatePlayerAim(
       this.player,
       this.input.activePointer
     );
-   
     updateProjectiles(this.projectiles)
-
-    // Enemy AI
-    const enemySpeed = 1.5;
-
-    const enemyDirection = new Phaser.Math.Vector2(
-      this.player.x - this.enemy.x,
-      this.player.y - this.enemy.y
-    );
-
-    if (enemyDirection.length() > 0) {
-
-      enemyDirection.normalize();
-
-      this.enemy.x += enemyDirection.x * enemySpeed;
-      this.enemy.y += enemyDirection.y * enemySpeed;
-
-    }
+    updateEnemyAi(this.enemy, this.player);
   }
 }
