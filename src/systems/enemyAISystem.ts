@@ -1,22 +1,26 @@
 import Phaser from "phaser";
 import type { Enemy } from "../entities/Enemy";
+import type { Player } from "../entities/Player";
 
 export function updateEnemyAi(
-  enemy: Enemy,
-  player: Phaser.GameObjects.Rectangle
+  enemies: Enemy[],
+  player: Player
 ) {
   const enemySpeed = 1.5;
 
-  const direction = new Phaser.Math.Vector2(
-    player.x - enemy.body.x,
-    player.y - enemy.body.y
-  );
+  enemies.forEach((enemy) => {
+    if (!enemy.body.active) return;
 
-  if (direction.length() > 0) {
-    direction.normalize();
+    const direction = new Phaser.Math.Vector2(
+      player.body.x - enemy.body.x,
+      player.body.y - enemy.body.y
+    );
 
-    enemy.body.x += direction.x * enemySpeed;
-    enemy.body.y += direction.y * enemySpeed;
-  }
+    if (direction.length() > 0) {
+      direction.normalize();
+
+      enemy.body.x += direction.x * enemySpeed;
+      enemy.body.y += direction.y * enemySpeed;
+    }
+  });
 }
-

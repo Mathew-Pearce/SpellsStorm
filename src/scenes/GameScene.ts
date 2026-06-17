@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 
 //Entities
-import { createPlayer } from "../entities/Player";
+import { createPlayer, type Player } from "../entities/Player";
 import { createEnemy, type Enemy } from "../entities/Enemy";
 import { createProjectile } from "../entities/Projectile";
 import { createHud } from '../entities/Hud'
@@ -13,16 +13,18 @@ import { updateProjectiles } from '../systems/projectileSystem'
 import { updateEnemyAi } from "../systems/enemyAISystem";
 import { updateSpellCasting } from '../systems/spellCastingSystem'
 import { updateProjectileEnemyCollision } from '../systems/collisionSystem'
+import { updateEnemySpawning } from '../systems/enemySpawnSystem'
+import { updatePlayerEnemyDamage } from '../systems/playerDamageSystem'
 
 //Managers
 import { InputManager } from '../input/InputManager'
 
 export class GameScene extends Phaser.Scene {
 
-  private player!: Phaser.GameObjects.Rectangle;
+  private player!: Player;
   private inputManager!: InputManager;
   private projectiles!: Phaser.GameObjects.Group;
-  private enemy!: Enemy;
+  private enemies!: Enemy[] = [];
 
   constructor() {
     super("GameScene");
@@ -34,7 +36,7 @@ export class GameScene extends Phaser.Scene {
     this.player = createPlayer(this);
 
     // Enemy
-    this.enemy = createEnemy(this);
+    this.enemies.push(createEnemy(this));
 
     // Input
     this.inputManager = new InputManager(this);
@@ -46,19 +48,22 @@ export class GameScene extends Phaser.Scene {
 
   update() {
    
-    updatePlayerMovement(this.player, this.inputManager.getMoveVector());
+    updatePlayerMovement(this.player.body, this.inputManager.getMoveVector());
 
-    updatePlayerAim(this.player, this.inputManager.getAimPointer());
+    updatePlayerAim(this.player.body, this.inputManager.getAimPointer());
     
     updateSpellCasting(
       this,
-      this.player,
+      this.player.body,
       this.projectiles,
       this.inputManager
     );
 
     updateProjectiles(this.projectiles);
-    updateProjectileEnemyCollision(this.projectiles, this.enemy);
-    updateEnemyAi(this.enemy, this.player);
+    updateProjectileEnemyCollision(this.projectiles, this.enemies);
+    updateEnemySpawning(this, this.enemies);
+    updateEnemyAi(this.enemies, this.player);
+    updatePlayerEnemyDamage(this, this.player, this.enemies)
+
   }
 }
