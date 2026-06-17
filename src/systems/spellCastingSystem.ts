@@ -20,7 +20,7 @@ export function updateSpellCasting(
 
   if (now - lastCastTime < castCooldown) 
     return;
-
+    console.log("cast");
 lastCastTime = now;
 
   const projectile = createProjectile(

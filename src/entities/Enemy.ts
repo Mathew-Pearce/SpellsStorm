@@ -1,9 +1,13 @@
-import Phaser from 'phaser';
+import Phaser from "phaser";
 
-export function createEnemy(scene: Phaser.Scene) {
-    return scene.add.rectangle(100, 100, 40, 40, 0xff4444)
+export type Enemy = {
+  body: Phaser.GameObjects.Rectangle;
+  health: number;
+};
 
-    enemy.setData('health', 3);
-
-    return enemy;
+export function createEnemy(scene: Phaser.Scene): Enemy {
+  return {
+    body: scene.add.rectangle(100, 100, 40, 40, 0xff4444),
+    health: 3,
+  };
 }

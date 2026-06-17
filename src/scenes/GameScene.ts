@@ -2,7 +2,7 @@ import Phaser from "phaser";
 
 //Entities
 import { createPlayer } from "../entities/Player";
-import { createEnemy } from "../entities/Enemy";
+import { createEnemy, type Enemy } from "../entities/Enemy";
 import { createProjectile } from "../entities/Projectile";
 import { createHud } from '../entities/Hud'
 
@@ -22,7 +22,7 @@ export class GameScene extends Phaser.Scene {
   private player!: Phaser.GameObjects.Rectangle;
   private inputManager!: InputManager;
   private projectiles!: Phaser.GameObjects.Group;
-  private enemy!: Phaser.GameObjects.Rectangle;
+  private enemy!: Enemy;
 
   constructor() {
     super("GameScene");
@@ -42,20 +42,6 @@ export class GameScene extends Phaser.Scene {
     createHud(this);
 
     this.projectiles = this.add.group();
-
-    this.input.on("pointerdown", () => {
-      const pointer = this.input.activePointer;
-  
-      const projectile = createProjectile(
-        this,
-        this.player.x,
-        this.player.y,
-        pointer.worldX,
-        pointer.worldY
-      );
-  
-      this.projectiles.add(projectile);
-    });
   }
 
   update() {
