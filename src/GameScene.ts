@@ -5,6 +5,7 @@ export class GameScene extends Phaser.Scene {
   private player!: Phaser.GameObjects.Rectangle;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   projectiles!: Phaser.GameObjects.Group;
+  enemy!: Phaser.GameObjects.Rectangle;
 
   constructor() {
     super("GameScene");
@@ -26,10 +27,10 @@ export class GameScene extends Phaser.Scene {
     //Projectiles
     this.projectiles = this.add.group();
 
-this.input.on("pointerdown", () => {
-  const pointer = this.input.activePointer;
+    this.input.on("pointerdown", () => {
+    const pointer = this.input.activePointer;
 
-  const projectile = this.add.circle(
+    const projectile = this.add.circle(
     this.player.x,
     this.player.y,
     6,
@@ -45,6 +46,9 @@ this.input.on("pointerdown", () => {
 
   this.projectiles.add(projectile);
   });
+  
+  //Create enemy
+  this.enemy = this.add.rectangle(100, 100, 40, 40, 0xff4444);
 }
 
   update(){
@@ -81,7 +85,7 @@ this.input.on("pointerdown", () => {
   this.player.x = Phaser.Math.Clamp(this.player.x, 20, 780);
   this.player.y = Phaser.Math.Clamp(this.player.y, 20, 580);
 
-  //
+  //Add projectiles
     this.projectiles.getChildren().forEach((child) => {
     const projectile = child as Phaser.GameObjects.Arc;
     const velocity = projectile.getData("velocity") as Phaser.Math.Vector2;
@@ -91,6 +95,21 @@ this.input.on("pointerdown", () => {
   
     return true;
   });
+
+  //enemy behaviour
     
+  const enemySpeed = 1.5;
+
+  const enemyDirection = new Phaser.Math.Vector2(
+  this.player.x - this.enemy.x,
+  this.player.y - this.enemy.y
+);
+
+if (enemyDirection.length() > 0) {
+  enemyDirection.normalize();
+
+  this.enemy.x += enemyDirection.x * enemySpeed;
+  this.enemy.y += enemyDirection.y * enemySpeed;
+    }
   }
 }
