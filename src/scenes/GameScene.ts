@@ -12,10 +12,13 @@ import { updatePlayerAim } from '../systems/playerAimingSystem'
 import { updateProjectiles } from '../systems/projectileSystem'
 import { updateEnemyAi } from "../systems/enemyAISystem";
 
+//Managers
+import { InputManager } from '../input/InputManager'
+
 export class GameScene extends Phaser.Scene {
 
   private player!: Phaser.GameObjects.Rectangle;
-  private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+  private inputManager!: InputManager;
   private projectiles!: Phaser.GameObjects.Group;
   private enemy!: Phaser.GameObjects.Rectangle;
 
@@ -32,10 +35,10 @@ export class GameScene extends Phaser.Scene {
     this.enemy = createEnemy(this);
 
     // Input
-    this.cursors = this.input.keyboard!.createCursorKeys();
+    this.inputManager = new InputManager(this);
 
     createHud(this);
-    
+
     this.projectiles = this.add.group();
 
     this.input.on("pointerdown", () => {
@@ -56,13 +59,10 @@ export class GameScene extends Phaser.Scene {
   update() {
    
     // Player movement
-    updatePlayerMovement(this.player, this.cursors);
+    updatePlayerMovement(this.player, this.inputManager.getMoveVector());
 
     //player aiming
-    updatePlayerAim(
-      this.player,
-      this.input.activePointer
-    );
+    updatePlayerAim(this.player, this.inputManager.getAimPointer());
 
     updateProjectiles(this.projectiles)
     updateEnemyAi(this.enemy, this.player);
