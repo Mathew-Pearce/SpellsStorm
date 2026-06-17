@@ -1,7 +1,11 @@
 import Phaser from "phaser";
+
+//Entities
 import { createPlayer } from "../entities/Player";
 import { createEnemy } from "../entities/Enemy";
 import { createProjectile } from "../entities/Projectile";
+//Systems
+import { updatePlayerMovement } from "../systems/playerMovement";
 
 export class GameScene extends Phaser.Scene {
 
@@ -52,27 +56,9 @@ export class GameScene extends Phaser.Scene {
   }
 
   update() {
-
+   
     // Player movement
-    const speed = 4;
-
-    const velocity = new Phaser.Math.Vector2(0, 0);
-
-    if (this.cursors.left.isDown) velocity.x = -1;
-    else if (this.cursors.right.isDown) velocity.x = 1;
-
-    if (this.cursors.up.isDown) velocity.y = -1;
-    else if (this.cursors.down.isDown) velocity.y = 1;
-
-    if (velocity.length() > 0) {
-
-      velocity.normalize();
-
-      this.player.x += velocity.x * speed;
-      this.player.y += velocity.y * speed;
-
-    }
-
+    updatePlayerMovement(this.player, this.cursors);
     // Mouse aiming
     const pointer = this.input.activePointer;
 
@@ -82,10 +68,6 @@ export class GameScene extends Phaser.Scene {
       pointer.worldX,
       pointer.worldY
     );
-
-    // Clamp player to screen
-    this.player.x = Phaser.Math.Clamp(this.player.x, 20, 780);
-    this.player.y = Phaser.Math.Clamp(this.player.y, 20, 580);
 
     // Projectiles
     this.projectiles.getChildren().forEach((child) => {
