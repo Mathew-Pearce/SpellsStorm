@@ -2,6 +2,10 @@ import Phaser from "phaser";
 import { InputManager } from "../input/InputManager";
 import { createProjectile } from "../entities/Projectile";
 
+
+let lastCastTime = 0;
+const castCooldown = 200;
+
 export function updateSpellCasting(
   scene: Phaser.Scene,
   player: Phaser.GameObjects.Rectangle,
@@ -11,6 +15,13 @@ export function updateSpellCasting(
   if (!inputManager.isCasting()) return;
 
   const pointer = inputManager.getAimPointer();
+
+  const now = scene.time.now;
+
+  if (now - lastCastTime < castCooldown) 
+    return;
+
+lastCastTime = now;
 
   const projectile = createProjectile(
     scene,
