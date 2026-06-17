@@ -6,6 +6,7 @@ import { createEnemy } from "../entities/Enemy";
 import { createProjectile } from "../entities/Projectile";
 //Systems
 import { updatePlayerMovement } from "../systems/playerMovement";
+import { updatePlayerAim } from '../systems/playerAimingSystem'
 
 export class GameScene extends Phaser.Scene {
 
@@ -35,13 +36,11 @@ export class GameScene extends Phaser.Scene {
       color: "#ffffff",
     });
 
-    // Projectiles
     this.projectiles = this.add.group();
 
     this.input.on("pointerdown", () => {
-
       const pointer = this.input.activePointer;
-
+  
       const projectile = createProjectile(
         this,
         this.player.x,
@@ -49,9 +48,8 @@ export class GameScene extends Phaser.Scene {
         pointer.worldX,
         pointer.worldY
       );
-
+  
       this.projectiles.add(projectile);
-
     });
   }
 
@@ -59,25 +57,18 @@ export class GameScene extends Phaser.Scene {
    
     // Player movement
     updatePlayerMovement(this.player, this.cursors);
-    // Mouse aiming
-    const pointer = this.input.activePointer;
 
-    this.player.rotation = Phaser.Math.Angle.Between(
-      this.player.x,
-      this.player.y,
-      pointer.worldX,
-      pointer.worldY
+    updatePlayerAim(
+      this.player,
+      this.input.activePointer
     );
-
-    // Projectiles
+   
     this.projectiles.getChildren().forEach((child) => {
-
       const projectile = child as Phaser.GameObjects.Arc;
       const velocity = projectile.getData("velocity") as Phaser.Math.Vector2;
-
+  
       projectile.x += velocity.x;
       projectile.y += velocity.y;
-
     });
 
     // Enemy AI
