@@ -4,6 +4,8 @@ import Phaser from "phaser";
 import { createPlayer } from "../entities/Player";
 import { createEnemy } from "../entities/Enemy";
 import { createProjectile } from "../entities/Projectile";
+import { createHud } from '../entities/Hud'
+
 //Systems
 import { updatePlayerMovement } from "../systems/playerMovementSystem";
 import { updatePlayerAim } from '../systems/playerAimingSystem'
@@ -32,12 +34,8 @@ export class GameScene extends Phaser.Scene {
     // Input
     this.cursors = this.input.keyboard!.createCursorKeys();
 
-    // Overlay
-    this.add.text(20, 20, "A Minor Magical Disagreement", {
-      fontSize: "24px",
-      color: "#ffffff",
-    });
-
+    createHud(this);
+    
     this.projectiles = this.add.group();
 
     this.input.on("pointerdown", () => {
@@ -59,10 +57,13 @@ export class GameScene extends Phaser.Scene {
    
     // Player movement
     updatePlayerMovement(this.player, this.cursors);
+
+    //player aiming
     updatePlayerAim(
       this.player,
       this.input.activePointer
     );
+
     updateProjectiles(this.projectiles)
     updateEnemyAi(this.enemy, this.player);
   }
